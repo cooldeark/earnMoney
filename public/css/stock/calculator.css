@@ -1,0 +1,41 @@
+.fingerMouse{
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.fixMb{
+    margin-top: 2em;
+}
+.fontBoldBig{
+    font-weight: bold;
+    font-size:1.5em;
+}
+
+.fontBig{
+    
+    font-size:1.5em;
+}
+
+.guideList{
+    background-color: #e9ecef;
+
+}
+
+.list-group-item {
+    background-color:#e9ecef !important;
+}
+
+.toTheBottom{
+    position: absolute;
+    bottom: 0;
+}
+
+hr {
+    border: 0;
+    clear:both;
+    display:block;
+    width: 96%;               
+    background-color:white;
+    height: 0.1px;
+  }
+
