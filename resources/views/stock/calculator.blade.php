@@ -32,8 +32,8 @@ font-family: 'Noto Sans TC',sans-serif !important;
 
     <div class="col-md-3 mb-2">{{--這裡先控制你裡面的東西，他能分配12等分得多少--}}
         <div class="form-group">
-            <label class="fontBoldBig ">股票編號/名稱</label>
-            <input class="form-control" type="text" id="stockNumber" name="stock[stockNumber]" placeholder="Ex:2330或台積電"/>
+            <label class="fontBoldBig ">股票編號</label>
+            <input class="form-control" type="number" id="stockNumber" name="stock[stockNumber]" placeholder="Ex:2330"/>
         </div>
     </div>
     
@@ -187,6 +187,25 @@ $('#bringSell').on('click',function(){
 });
 
 $('#searchStock').click(function(){
+
+    let stockName=$('#stockNumber').val();
+    stockName=stockName.replace(/ /g,'');
+    // console.log(stockName);
+    if(stockName=='' || stockName==undefined){
+        alert('請輸入股票編號');
+    }else{
+        $.ajax({
+            url:"stockDetail",
+            data:{stockNumber:stockName},
+            type:'GET',
+//             dataType:'json',
+            success:function(response){
+                console.log(response);
+            }
+        }).fail(function(){
+        });
+    }
+
     $('#contextContainer2').css('display','block');
 });
 

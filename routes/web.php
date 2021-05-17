@@ -11,3 +11,4 @@
 |
 */
 Route::get('/stockCalculator','stockController@calculator');
+Route::get('/stockDetail','stockController@calculatorPost')->name('stockDetail');
