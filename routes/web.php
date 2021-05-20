@@ -10,5 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/testImplements','testImplementController@getFuck');
 Route::get('/stockCalculator','stockController@calculator');
 Route::get('/stockDetail','stockController@calculatorPost')->name('stockDetail');

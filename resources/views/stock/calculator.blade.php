@@ -23,7 +23,7 @@ font-family: 'Noto Sans TC',sans-serif !important;
 </head>
 <body>
 <div id="mainContiainer">
-<nav class="navbar navbar-expand-lg navbar-light bg-dark" id="topBanner">
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color:#481717;" id="topBanner">
 <a id="calculatorName" class="navbar-brand fingerMouse" style="color:white;font-size:2em;margin-left:2em;">股票計算機</a>
 </nav>
 <div class="container " id="mainContainer">
@@ -55,13 +55,13 @@ font-family: 'Noto Sans TC',sans-serif !important;
     
     <div class="col-md-12 mt-2">
         <div class="form-group" >
-            <label class="fontBig ">股票名稱 : <span>台積電</span></label>
+            <label class="fontBig ">股票名稱 : <span id="stockName"></span></label>
         </div>
     </div>
     <hr>
     <div class="col-md-12 mt-2">
         <div class="form-group" >
-            <label class="fontBig ">股票編號 : <span>2330</span></label>
+            <label class="fontBig ">股票編號 : <span id="stockNum"></span></label>
         </div>
     </div>
     <hr>
@@ -73,31 +73,31 @@ font-family: 'Noto Sans TC',sans-serif !important;
     <hr>
     <div class="col-md-12 mt-2">
         <div class="form-group" >
-            <label class="fontBig ">一張(1000股) : <span>540,000</span> TWD</label>
+            <label class="fontBig ">一張(1000股) : <span id="stockFullPrice"></span> TWD</label>
         </div>
     </div>
     <hr>
     <div class="col-md-12 mt-2">
         <div class="form-group" >
-            <label class="fontBig ">手續費(買/賣 皆收) : <span>769.5</span> TWD</label>
+            <label class="fontBig ">手續費(買/賣 皆收) : <span id="stockTransalate"></span> TWD</label>
         </div>
     </div>
     <hr>
     <div class="col-md-12 mt-2">
         <div class="form-group" >
-            <label class="fontBig ">股票交易稅(賣出收) : <span>1620</span> TWD</label>
+            <label class="fontBig ">股票交易稅(賣出收) : <span id="stockSellRatePrice"></span> TWD</label>
         </div>
     </div>
     <hr>
     <div class="col-md-12 mt-2">
         <div class="form-group" >
-            <label class="fontBig "><b>做多</b>-不損失本金需以 : <span>543</span><span>/股</span> 賣出</label>
+            <label class="fontBig "><b>做多</b>-不損失本金需以 : <span id="stockLookMore"></span><span>/股</span> 賣出</label>
         </div>
     </div>
     <hr>
     <div class="col-md-12 mt-2">
         <div class="form-group" >
-            <label class="fontBig "><b>做空</b>-不損失本金需以 : <span>537</span><span>/股</span> 賣出</label>
+            <label class="fontBig "><b>做空</b>-不損失本金需以 : <span id="stockLookLess"></span><span>/股</span> 賣出</label>
         </div>
     </div>
     <hr>
@@ -198,15 +198,30 @@ $('#searchStock').click(function(){
             url:"stockDetail",
             data:{stockNumber:stockName},
             type:'GET',
-//             dataType:'json',
+            dataType:'json',
             success:function(response){
                 console.log(response);
+                if(response.status==200){
+                    $('#stockName').text(response.data.name);
+                    $('#stockNum').text(response.data.stockNum);
+                    $('#beTakePrice').text(response.data.eachPrice);
+                    $('#stockFullPrice').text(response.data.fullPrice);
+                    $('#stockTransalate').text(response.data.transaltePrice);
+                    $('#stockSellRatePrice').text(response.data.sellRatePrice);
+                    $('#stockLookMore').text(response.data.lookMore);
+                    $('#stockLookLess').text(response.data.lookLess);
+                    $('#contextContainer2').css('display','block');
+                }else{
+                    alert('資料忙碌中，請稍後再試一次');
+                }
+                
             }
-        }).fail(function(){
+        }).fail(function(errorMsg){
+                alert('伺服器忙線中，請聯繫管理員');
         });
     }
 
-    $('#contextContainer2').css('display','block');
+    
 });
 
 $('#closeResult').click(function(){
