@@ -4,6 +4,7 @@
 @include('library.basicNeed')
 <link rel="stylesheet" href="{{asset('css/stock/calculator.css')}}" />
 <link href="{{asset('css/fontAwesome/css/all.css')}}" rel="stylesheet"> <!--load all styles -->
+<link href="{{asset('css/loading.css')}}" rel="stylesheet"> <!--load all styles -->
 <style>
 /* @import url("https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap");
 font-family: 'Noto Sans TC',sans-serif !important;
@@ -22,6 +23,7 @@ font-family: 'Noto Sans TC',sans-serif !important;
 </style>
 </head>
 <body>
+    
 <div id="mainContiainer">
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#481717;" id="topBanner">
 <a id="calculatorName" class="navbar-brand fingerMouse" style="color:white;font-size:2em;margin-left:2em;">股票計算機</a>
@@ -171,7 +173,9 @@ font-family: 'Noto Sans TC',sans-serif !important;
 
 
 </div>
+<div class="modal"><!-- Place at bottom of page --></div>
 <script>
+$body = $("body");
 $(function(){
 $('#calculatorName').on('click',function(){
     window.location='/stockCalculator';
@@ -187,7 +191,7 @@ $('#bringSell').on('click',function(){
 });
 
 $('#searchStock').click(function(){
-
+    $body.addClass("loading");
     let stockName=$('#stockNumber').val();
     stockName=stockName.replace(/ /g,'');
     // console.log(stockName);
@@ -217,8 +221,10 @@ $('#searchStock').click(function(){
                 
             }
         }).fail(function(errorMsg){
-                alert('伺服器忙線中，請聯繫管理員');
-        });
+                alert(errorMsg.responseJSON.message);
+        }).always(function(){
+            $body.removeClass("loading");
+        });
     }
 
     
