@@ -133,7 +133,8 @@ class stockController extends Controller implements Fuck
 
     static protected function getStock($stockNumber){
         // dd(public_path());
-        $cmd=escapeshellcmd(public_path().'\python\stockResult.py '.$stockNumber);//python sysv 第一個是執行的檔案名，後面開始是你添加的參數
+        // $cmd=escapeshellcmd(public_path().'\python\stockResult.py '.$stockNumber);//python sysv 第一個是執行的檔案名，後面開始是你添加的參數，這個為windows測試用
+        $cmd=escapeshellcmd('python3 /var/www/html/earnMoney/public/python/stockResult.py '.$stockNumber);//此為線上用
         // dd($cmd);
         $result=shell_exec($cmd);
         return $result;
