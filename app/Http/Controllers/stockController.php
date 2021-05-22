@@ -60,6 +60,8 @@ class stockController extends Controller implements Fuck
             $stockResult=(float)$getFullInfo->realtime->best_bid_price[0];
             
             //這裡把價格加上去，才是對的，因為我們取的best_bid_price是買價，所以往上加價格就是現價
+            //邏輯有問題
+            /*
             if($stockResult<10 && $stockResult>0){//0~9.99都是0.01 這樣在增加
                 $stockResult=$stockResult+0.01;
             }else if($stockResult<50 && $stockResult>=10){//10~50內，是0.05這樣增加
@@ -73,7 +75,7 @@ class stockController extends Controller implements Fuck
             }else if($stockResult>=1000){//1000以上，是5這樣增加
                 $stockResult=$stockResult+5;
             }
-
+            */
 
             // dd($stockResult);
             $fullPrice=$stockResult*1000;
