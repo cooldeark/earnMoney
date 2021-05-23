@@ -29,7 +29,7 @@ class stockController extends Controller implements Fuck
     public function calculatorPost(Request $req){
         $getUserCheck=Session::get('userCheck');
         $getUserCheckTime=Session::get('userCanCheckTime');
-        if($getUserCheck==false || time()>$getUserCheckTime){
+        if($getUserCheck==false || time()>$getUserCheckTime){//限定user五秒內只能查一次
             Session::put('userCheck',true);
             Session::put('userCanCheckTime',time()+5);//限定user五秒內只能查一次
             
@@ -49,15 +49,27 @@ class stockController extends Controller implements Fuck
             $getFullInfo=json_decode($this->getStock($req->stockNumber));
         // dd($stockResult->info->name);
         // $stockResult=(int)$stockResult->realtime->latest_trade_price;//不知道為什麼開盤會沒有值，所以取best_bid_price，雖然會差一點就是了
-        if($userInput==null || $userInput=="" || empty($userInput) || !isset($userInput)){ 
+        if($getFullInfo==null || $getFullInfo=="" || empty($getFullInfo) || !isset($getFullInfo)){ 
             $myJson=array(
                 'status'=>502,
                 'message'=>'查無此股票編號'
             );
             return response(json_encode($myJson),502);
         }else{
+            $todayEndStockTime=strtotime(date('Y-m-d',time()).' 13:30:00');//抓取今天stockTime，在1~5的9:00~1:30都取best_bid_price，不是的話取latest_trade_price
+            $todayStartStockTime=strtotime(date('Y-m-d',time()).' 9:30:00');
+            // dd($getFullInfo->realtime);
 
-            $stockResult=(float)$getFullInfo->realtime->best_bid_price[0];
+            if(time()<$todayEndStockTime && time()>$todayStartStockTime){//判斷時間是不是介於9~13:00
+                if(date('w',time())!=0 && date('w',time())!=6){//0是星期天，6是星期六，代表是放假所以股市不開，但還要考慮到國定假日或其他方式導致沒值，要加邏輯去防範(還沒做拉ㄎㄎ)
+                    $stockResult=(float)$getFullInfo->realtime->latest_trade_price;
+                }else{//在股市開盤時間裡面
+                    $stockResult=(float)$getFullInfo->realtime->best_bid_price[0];
+                }
+            }else{//不在股市開盤時間
+                $stockResult=(float)$getFullInfo->realtime->latest_trade_price;
+            }
+            
             
             //這裡把價格加上去，才是對的，因為我們取的best_bid_price是買價，所以往上加價格就是現價
             //邏輯有問題
