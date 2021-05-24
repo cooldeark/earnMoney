@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Fuck;
 use Illuminate\Support\Facades\Session;
+use DateTime;
+use DateTimeZone;
+
 
 class stockController extends Controller implements Fuck
 {
@@ -57,11 +60,13 @@ class stockController extends Controller implements Fuck
             return response(json_encode($myJson),502);
         }else{
             $todayEndStockTime=strtotime(date('Y-m-d',time()).' 13:30:00');//抓取今天stockTime，在1~5的9:00~1:30都取best_bid_price，不是的話取latest_trade_price
-            $todayStartStockTime=strtotime(date('Y-m-d',time()).' 9:30:00');
+            $todayStartStockTime=strtotime(date('Y-m-d',time()).' 9:00:00');
             // dd($getFullInfo->realtime);
-
-            if(time()<$todayEndStockTime && time()>$todayStartStockTime){//判斷時間是不是介於9~13:00
-                if(date('w',time())!=0 && date('w',time())!=6){//0是星期天，6是星期六，代表是放假所以股市不開，但還要考慮到國定假日或其他方式導致沒值，要加邏輯去防範(還沒做拉ㄎㄎ)
+            $convertionDate = new DateTime(null, new DateTimeZone('Asia/Taipei'));
+            $nowTime=($convertionDate->getTimestamp() + $convertionDate->getOffset());
+            // print_r($nowTime);
+            if($nowTime<$todayEndStockTime && $nowTime>$todayStartStockTime){//判斷時間是不是介於9~13:00
+                if(date('w',$nowTime)!=0 && date('w',$nowTime)!=6){//0是星期天，6是星期六，代表是放假所以股市不開，但還要考慮到國定假日或其他方式導致沒值，要加邏輯去防範(還沒做拉ㄎㄎ)
                     $stockResult=(float)$getFullInfo->realtime->best_bid_price[0];
                 }else{//不在股市開盤時間裡面
                     $stockResult=(float)$getFullInfo->realtime->latest_trade_price;
