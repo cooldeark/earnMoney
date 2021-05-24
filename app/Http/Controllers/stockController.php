@@ -62,9 +62,9 @@ class stockController extends Controller implements Fuck
 
             if(time()<$todayEndStockTime && time()>$todayStartStockTime){//判斷時間是不是介於9~13:00
                 if(date('w',time())!=0 && date('w',time())!=6){//0是星期天，6是星期六，代表是放假所以股市不開，但還要考慮到國定假日或其他方式導致沒值，要加邏輯去防範(還沒做拉ㄎㄎ)
-                    $stockResult=(float)$getFullInfo->realtime->latest_trade_price;
-                }else{//在股市開盤時間裡面
                     $stockResult=(float)$getFullInfo->realtime->best_bid_price[0];
+                }else{//不在股市開盤時間裡面
+                    $stockResult=(float)$getFullInfo->realtime->latest_trade_price;
                 }
             }else{//不在股市開盤時間
                 $stockResult=(float)$getFullInfo->realtime->latest_trade_price;
