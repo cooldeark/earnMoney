@@ -60,7 +60,7 @@ class stockController extends Controller implements Fuck
             return response(json_encode($myJson),502);
         }else{
             $todayEndStockTime=strtotime(date('Y-m-d',time()).' 13:30:00');//抓取今天stockTime，在1~5的9:00~1:30都取best_bid_price，不是的話取latest_trade_price
-            $todayStartStockTime=strtotime(date('Y-m-d',time()).' 9:00:00');
+            $todayStartStockTime=strtotime(date('Y-m-d',time()).' 9:00:00');//這裡的time()，取的不會是server side timezone，所以還是會有誤差，time()會給的是中原標準時間GMT+0，所以下面我們必須要使用其他方式來計算是否為開盤時間
             // dd($getFullInfo->realtime);
             $convertionDate = new DateTime(null, new DateTimeZone('Asia/Taipei'));
             $nowTime=($convertionDate->getTimestamp() + $convertionDate->getOffset());
@@ -120,6 +120,8 @@ class stockController extends Controller implements Fuck
                 if((substr($lookMore,4,1)==0 || substr($lookMore,4,1)=="") && (substr($lookMore,5,1)==0 || substr($lookMore,5,1)=="")){//取不到值會是""
                     //代表是整數，45.6之類的，就不用去處理他
                 }else{
+                    $lookMore=$this->floor_dec($lookMore,2);
+                    $lookLess=$this->floor_dec($lookLess,2);
                     $lookMore=sprintf('%.1f', (float)$lookMore);//因為我們都是0.05做一個級距，所以要先清除小數點後一位的數字，再來加上0.05 這樣才不損失本金
                     $lookLess=sprintf('%.1f', (float)$lookLess);
                     $lookMore=floor(($lookMore+0.05)*100)/100;
@@ -133,6 +135,8 @@ class stockController extends Controller implements Fuck
                 if((substr($lookMore,4,1)==0 || substr($lookMore,4,1)=="") && (substr($lookMore,5,1)==0 || substr($lookMore,5,1)=="")){
                     //代表是整數55.9之類的
                 }else{
+                    $lookMore=$this->floor_dec($lookMore,1);
+                    $lookLess=$this->floor_dec($lookLess,1);
                     $lookMore=sprintf('%.1f', (float)$lookMore);
                     $lookLess=sprintf('%.1f', (float)$lookLess);
                     $lookMore=floor(($lookMore+0.1)*10)/10;
@@ -206,6 +210,19 @@ class stockController extends Controller implements Fuck
         // dd($cmd);
         $result=shell_exec($cmd);
         return $result;
+         
+    }
+    //無條件捨去，按照丟進來的precicion去判定多少以後捨棄
+    static protected function floor_dec($v, $precision){
+        $c = pow(10, $precision);
+        return floor($v*$c)/$c;
+         
+    }
+
+    //無條件進位，按照丟進來的precicion去判定多少以後進位
+    static protected function ceil_dec($v, $precision){
+        $c = pow(10, $precision);
+        return ceil($v*$c)/$c;
          
     }
 }
