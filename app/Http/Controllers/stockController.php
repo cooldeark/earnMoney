@@ -50,9 +50,9 @@ class stockController extends Controller implements Fuck
             return response(json_encode($myJson),502);
         }else{
             $getFullInfo=json_decode($this->getStock($req->stockNumber));
-        // dd($stockResult->info->name);
+        
         // $stockResult=(int)$stockResult->realtime->latest_trade_price;//不知道為什麼開盤會沒有值，所以取best_bid_price，雖然會差一點就是了
-        if($getFullInfo->success==false){ 
+        if($getFullInfo->success==false){//線上 
             $myJson=array(
                 'status'=>502,
                 'message'=>'查無此股票編號'
